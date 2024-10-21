@@ -9,9 +9,9 @@ df['Total_Gold'] = df['Gold'] + df['Silver'] / 2 + df['Bronze'] / 3
 
 # Sắp xếp và phân hạng các nước theo Total Gold
 df_sorted = df.sort_values(by='Total_Gold', ascending=False).reset_index(drop=True)
-df_sorted['Rank'] = df_sorted['Total_Gold'].rank(method='min', ascending=False).astype(int).astype(str)
+df_sorted['Rank'] = df_sorted['Total_Gold'].rank(method='dense', ascending=False).astype(int).astype(str)
 
-# Thêm "(tie)" cho hạng đồng
+# Thêm "(tie)" cho đồng hạng
 duplicates = df_sorted.duplicated(subset='Total_Gold', keep=False)
 df_sorted.loc[duplicates, 'Rank'] += ' (tie)'
 
@@ -28,8 +28,9 @@ df_sorted['Rank'] = df_sorted['Rank'].apply(add_suffix)
 top_3_ranks = df_sorted['Rank'].unique()[:3]
 top_3_list = [(rank, df_sorted[df_sorted['Rank'] == rank]['Country'].tolist()) for rank in top_3_ranks]
 
-# Danh sách top 3
-print(f"\nList top 3:\n{top_3_list}")
+print("List Top 3:")
+for i in top_3_list:
+    print(i[0], ', '.join(i for i in i[1]))
 
 # Lưu vào file CSV
 df_sorted.to_csv("C:/Users/Admin/Downloads/final_data.csv", index=False)
